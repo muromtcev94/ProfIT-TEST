@@ -54,15 +54,13 @@ eof
 
 ln -s /etc/nginx/sites-available/test.local /etc/nginx/sites-enabled
 unlink /etc/nginx/sites-enabled/default
-#echo "127.0.0.1	test.local" >> /etc/hosts
 
 echo -e "${YELLOW}DONE!${NC}"
 
 #configuring PHP
 echo -e "${YELLOW}Configuring PHP${NC}"
-#mkdir /home/user/test/test.local
-#sudo chmod -R 777 /home/user/test/test.local
 touch /var/www/html/info.php
+
 cat > /var/www/html/info.php <<\eof
 <?php
 phpinfo();
