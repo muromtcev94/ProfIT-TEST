@@ -2,22 +2,22 @@
 
 #Instalations
 echo -e "${YELLOW}Installing nginx${NC}"
-apt-get install nginx php7.4-fpm --yes;
+apt-get install nginx php8.1-fpm --yes;
 
 echo -e "${YELLOW}Installing php5-curl${NC}"
-apt-get install php7.4-curl --yes;
+apt-get install php8.1-curl --yes;
 
 echo -e "${YELLOW}Installing postgres${NC}"
 apt-get install postgresql --yes;
 
 #Configuring Nginx
 echo -e "${YELLOW}Configuring Nginx${NC}"
-sudo touch /etc/nginx/sites-available/test.local
+touch /etc/nginx/sites-available/test.local
 cat > /etc/nginx/sites-available/test.local <<\eof
 server {
-        listen 80;
-        server_name    test.local;
-        root  /home/user/test/test.local;
+        listen 80; # порт, прослушивающий nginx
+        server_name    localhost; # доменное имя, относящиеся к текущему виртуальному хосту
+        root  /var/www/html; # каталог в котором лежит проект, путь к точке входа
 
 
         index index.php;
@@ -40,7 +40,7 @@ server {
         location ~* \.php$ {
         try_files $uri = 404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock; # подключаем сокет php-fpm
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
@@ -52,21 +52,24 @@ server {
 }
 eof
 
-sudo ln -s /etc/nginx/sites-available/test.local /etc/nginx/sites-enabled
-
-echo "127.0.0.1	test.local" >> /etc/hosts
+ln -s /etc/nginx/sites-available/test.local /etc/nginx/sites-enabled
+unlink /etc/nginx/sites-enabled/default
+#echo "127.0.0.1	test.local" >> /etc/hosts
 
 echo -e "${YELLOW}DONE!${NC}"
 
 #configuring PHP
 echo -e "${YELLOW}Configuring PHP${NC}"
-mkdir /home/user/test/test.local
-sudo chmod -R 777 /home/user/test/test.local
-touch /home/user/test/test.local/index.php
-cat > /home/user/test/test.local/index.php <<\eof
-<?php$
-
-	echo "Test Prof-IT!";
+#mkdir /home/user/test/test.local
+#sudo chmod -R 777 /home/user/test/test.local
+touch /var/www/html/info.php
+cat > /var/www/html/info.php <<\eof
+<?php
+phpinfo();
 
 eof
+
+systemctl restart nginx
+systemctl restart php8.1-fpm
+
 echo -e "${YELLOW}DONE${NC}"
