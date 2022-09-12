@@ -15,9 +15,9 @@ echo -e "${YELLOW}Configuring Nginx${NC}"
 sudo touch /etc/nginx/sites-available/test.local
 cat > /etc/nginx/sites-available/test.local <<\eof
 server {
-        listen 80; # порт, прослушивающий nginx
-        server_name    test.local; # доменное имя, относящиеся к текущему виртуальному хосту
-        root  /home/user/test/test.local; # каталог в котором лежит проект, путь к точке входа
+        listen 80;
+        server_name    test.local;
+        root  /home/user/test/test.local;
 
 
         index index.php;
@@ -40,7 +40,7 @@ server {
         location ~* \.php$ {
         try_files $uri = 404;
         fastcgi_split_path_info ^(.+\.php)(/.+)$;
-        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock; # подключаем сокет php-fpm
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
         fastcgi_index index.php;
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         include fastcgi_params;
